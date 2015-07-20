@@ -75,7 +75,7 @@ object ForwarderService {
     val conf = createConf(args: _*)
 
     ProcessKeeper.startJavaProcess(
-      s"app_${conf.httpPort()}",
+      s"app_${conf.httpPort()}", 128,
       arguments = List(ForwarderService.className, "helloApp") ++ args,
       upWhen = _.contains("Started SelectChannelConnector"))
   }
@@ -84,7 +84,7 @@ object ForwarderService {
     val conf = createConf(args: _*)
 
     ProcessKeeper.startJavaProcess(
-      s"forwarder_${conf.httpPort()}",
+      s"forwarder_${conf.httpPort()}", 128,
       arguments = List(ForwarderService.className, "forwarder", forwardToPort.toString) ++ args,
       upWhen = _.contains("SelectChannelConnector@"))
   }
