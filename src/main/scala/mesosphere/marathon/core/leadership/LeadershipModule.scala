@@ -2,7 +2,7 @@ package mesosphere.marathon.core.leadership
 
 import akka.actor.{ ActorRef, ActorRefFactory, Props }
 import mesosphere.marathon.core.leadership.impl.{
-  ActorLeadershipCoordinator,
+  LeadershipCoordinatorDelegate,
   LeadershipCoordinatorActor,
   WhenLeaderActor
 }
@@ -41,6 +41,6 @@ class LeadershipModule(actorRefFactory: ActorRefFactory) {
 
     val props = LeadershipCoordinatorActor.props(whenLeaderRefs)
     val actorRef = actorRefFactory.actorOf(props, "leaderShipCoordinator")
-    new ActorLeadershipCoordinator(actorRef)
+    new LeadershipCoordinatorDelegate(actorRef)
   }
 }

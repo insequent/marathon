@@ -2,7 +2,7 @@ package mesosphere.marathon.core.launcher
 
 import mesosphere.marathon.MarathonSchedulerDriverHolder
 import mesosphere.marathon.core.base.Clock
-import mesosphere.marathon.core.launcher.impl.{ DefaultOfferProcessor, DefaultTaskLauncher }
+import mesosphere.marathon.core.launcher.impl.{ OfferProcessorImpl, TaskLauncherImpl }
 import mesosphere.marathon.core.matcher.OfferMatcher
 import mesosphere.marathon.metrics.Metrics
 
@@ -14,12 +14,12 @@ class LauncherModule(
     offerMatcher: OfferMatcher) {
 
   lazy val offerProcessor: OfferProcessor =
-    new DefaultOfferProcessor(
+    new OfferProcessorImpl(
       offerProcessorConfig, clock,
       metrics,
       offerMatcher, taskLauncher)
 
-  lazy val taskLauncher: TaskLauncher = new DefaultTaskLauncher(
+  lazy val taskLauncher: TaskLauncher = new TaskLauncherImpl(
     marathonSchedulerDriverHolder,
     clock)
 }

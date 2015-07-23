@@ -1,8 +1,7 @@
 package mesosphere.marathon.core.leadership
 
 import akka.actor.{ ActorRefFactory, ActorRef, Props }
-import mesosphere.marathon.core.base.ShutdownHooks
-import mesosphere.marathon.core.base.actors.ActorsModule
+import mesosphere.marathon.core.base.{ ActorsModule, ShutdownHooks }
 
 private class AlwaysElectedLeadershipModule(actorRefFactory: ActorRefFactory) extends LeadershipModule(actorRefFactory) {
   override def startWhenLeader(props: => Props, name: String, preparedOnStart: Boolean = true): ActorRef =

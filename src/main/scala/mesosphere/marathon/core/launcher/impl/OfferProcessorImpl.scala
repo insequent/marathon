@@ -15,7 +15,7 @@ import scala.util.control.NonFatal
 /**
   * Passes processed offers to the offerMatcher and launches the appropriate tasks.
   */
-private[launcher] class DefaultOfferProcessor(
+private[launcher] class OfferProcessorImpl(
     conf: OfferProcessorConfig, clock: Clock,
     metrics: Metrics,
     offerMatcher: OfferMatcher, taskLauncher: TaskLauncher) extends OfferProcessor {

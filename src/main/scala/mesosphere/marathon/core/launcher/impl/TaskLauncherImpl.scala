@@ -9,7 +9,7 @@ import org.apache.mesos.Protos.{ OfferID, Status, TaskInfo }
 import org.apache.mesos.SchedulerDriver
 import org.slf4j.LoggerFactory
 
-private[launcher] class DefaultTaskLauncher(
+private[launcher] class TaskLauncherImpl(
     marathonSchedulerDriverHolder: MarathonSchedulerDriverHolder,
     clock: Clock) extends TaskLauncher {
   private[this] val log = LoggerFactory.getLogger(getClass)

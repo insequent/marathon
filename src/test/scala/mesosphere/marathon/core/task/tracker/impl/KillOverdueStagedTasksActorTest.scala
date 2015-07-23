@@ -1,10 +1,10 @@
 package mesosphere.marathon.core.task.tracker.impl
 
-import akka.actor.{ActorRef, ActorSystem, PoisonPill, Terminated}
+import akka.actor.{ ActorRef, ActorSystem, PoisonPill, Terminated }
 import akka.testkit.TestProbe
 import mesosphere.marathon.Protos.MarathonTask
 import mesosphere.marathon.tasks.TaskTracker
-import mesosphere.marathon.{MarathonSchedulerDriverHolder, MarathonSpec}
+import mesosphere.marathon.{ MarathonSchedulerDriverHolder, MarathonSpec }
 import mesosphere.mesos.protos.TaskID
 import org.apache.mesos.SchedulerDriver
 import org.mockito.Mockito

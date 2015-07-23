@@ -3,8 +3,7 @@ package mesosphere.marathon.core
 import akka.actor.ActorSystem
 import com.google.inject.Inject
 import mesosphere.marathon.api.LeaderInfo
-import mesosphere.marathon.core.base.actors.ActorsModule
-import mesosphere.marathon.core.base.{ Clock, ShutdownHooks }
+import mesosphere.marathon.core.base.{ ActorsModule, Clock, ShutdownHooks }
 import mesosphere.marathon.core.flow.FlowModule
 import mesosphere.marathon.core.launcher.LauncherModule
 import mesosphere.marathon.core.launchqueue.LaunchQueueModule

@@ -1,8 +1,8 @@
-package mesosphere.marathon.core.base.actors
+package mesosphere.marathon.core.base
 
-import akka.actor.{ Scheduler, ActorRefFactory, ActorSystem }
-import mesosphere.marathon.core.base.ShutdownHooks
+import akka.actor.{ ActorRefFactory, ActorSystem }
 import org.slf4j.LoggerFactory
+
 import scala.concurrent.duration._
 
 /**

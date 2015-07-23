@@ -14,7 +14,7 @@ import org.mockito.Mockito.{ when, verify }
 import mesosphere.mesos.protos.Implicits._
 import scala.collection.JavaConverters._
 
-class DefaultTaskLauncherTest extends MarathonSpec {
+class TaskLauncherImplTest extends MarathonSpec {
   private[this] val offerId = OfferID("offerId")
   private[this] val offerIdAsJava: util.Set[Protos.OfferID] = Collections.singleton[Protos.OfferID](offerId)
   private[this] val taskInfo1 = MarathonTestHelper.makeOneCPUTask("taskid1").build()
@@ -62,7 +62,7 @@ class DefaultTaskLauncherTest extends MarathonSpec {
   before {
     driverHolder = new MarathonSchedulerDriverHolder
     driverHolder.driver = Some(mock[SchedulerDriver])
-    launcher = new DefaultTaskLauncher(driverHolder, ConstantClock())
+    launcher = new TaskLauncherImpl(driverHolder, ConstantClock())
   }
 
   after {

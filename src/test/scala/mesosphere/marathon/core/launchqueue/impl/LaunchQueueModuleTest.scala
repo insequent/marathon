@@ -216,7 +216,7 @@ class LaunchQueueModuleTest extends MarathonSpec with BeforeAndAfter with GivenW
   before {
     shutdownHooks = ShutdownHooks()
     clock = Clock()
-    taskBusModule = TaskBusModule()
+    taskBusModule = new TaskBusModule()
 
     offerMatcherManager = new DummyOfferMatcherManager()
     taskTracker = mock[TaskTracker]("taskTracker")

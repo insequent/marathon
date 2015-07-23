@@ -6,7 +6,7 @@ import akka.pattern.pipe
 import mesosphere.marathon.core.base.Clock
 import mesosphere.marathon.core.matcher.OfferMatcher
 import mesosphere.marathon.core.matcher.OfferMatcher.{ MatchedTasks, TaskWithSource }
-import mesosphere.marathon.core.matcher.manager.{ OfferInterest, OfferMatcherConfig }
+import mesosphere.marathon.core.matcher.manager.{ OfferMatcherConfig }
 import mesosphere.marathon.core.matcher.manager.impl.OfferMatcherManagerActor.OfferData
 import mesosphere.marathon.core.matcher.util.ActorOfferMatcher
 import mesosphere.marathon.state.Timestamp

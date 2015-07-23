@@ -14,7 +14,7 @@ import org.mockito.Mockito.{ verify, when }
 import scala.concurrent.duration._
 import scala.concurrent.{ Await, Future }
 
-class DefaultOfferProcessorTest extends MarathonSpec {
+class OfferProcessorImplTest extends MarathonSpec {
   private[this] val offer = MarathonTestHelper.makeBasicOffer().build()
   private[this] val offerId = offer.getId
   private[this] val taskInfo1 = MarathonTestHelper.makeOneCPUTask("taskid1").build()
@@ -103,7 +103,7 @@ class DefaultOfferProcessorTest extends MarathonSpec {
     offerMatcher = mock[OfferMatcher]
     taskLauncher = mock[TaskLauncher]
 
-    new DefaultOfferProcessor(conf, clock, new Metrics(new MetricRegistry), offerMatcher, taskLauncher)
+    new OfferProcessorImpl(conf, clock, new Metrics(new MetricRegistry), offerMatcher, taskLauncher)
   }
 
   class DummySource extends TaskLaunchSource {
