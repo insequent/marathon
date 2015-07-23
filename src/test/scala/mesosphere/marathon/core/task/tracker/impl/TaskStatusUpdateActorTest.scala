@@ -2,21 +2,21 @@ package mesosphere.marathon.core.task.tracker.impl
 
 import akka.actor.ActorSystem
 import akka.event.EventStream
-import akka.testkit.{TestActorRef, TestProbe}
+import akka.testkit.{ TestActorRef, TestProbe }
 import mesosphere.marathon.MarathonSchedulerActor.ScaleApp
 import mesosphere.marathon.Protos.MarathonTask
 import mesosphere.marathon.core.leadership.PreparationMessages
-import mesosphere.marathon.core.task.bus.{TaskStatusUpdateTestHelper, TaskStatusObservables}
+import mesosphere.marathon.core.task.bus.{ TaskStatusUpdateTestHelper, TaskStatusObservables }
 import mesosphere.marathon.core.task.bus.TaskStatusObservables.TaskStatusUpdate
 import mesosphere.marathon.event.MesosStatusUpdateEvent
 import mesosphere.marathon.health.HealthCheckManager
-import mesosphere.marathon.state.{Timestamp, PathId}
-import mesosphere.marathon.tasks.{TaskIdUtil, TaskTracker}
-import mesosphere.marathon.{MarathonTestHelper, MarathonSchedulerDriverHolder, MarathonSpec}
+import mesosphere.marathon.state.{ Timestamp, PathId }
+import mesosphere.marathon.tasks.{ TaskIdUtil, TaskTracker }
+import mesosphere.marathon.{ MarathonTestHelper, MarathonSchedulerDriverHolder, MarathonSpec }
 import org.apache.mesos.Protos.TaskStatus
 import org.apache.mesos.SchedulerDriver
 import org.mockito.internal.matchers.CapturingMatcher
-import org.mockito.{ArgumentCaptor, Matchers, Mockito}
+import org.mockito.{ ArgumentCaptor, Matchers, Mockito }
 import rx.lang.scala.Subject
 import rx.lang.scala.subjects.PublishSubject
 
@@ -65,7 +65,6 @@ class TaskStatusUpdateActorTest extends MarathonSpec {
   private[this] lazy val task = MarathonTestHelper.makeOneCPUTask(TaskIdUtil.newTaskId(appId).getValue).build()
   private[this] lazy val marathonTask =
     MarathonTask.newBuilder().setId(task.getTaskId.getValue).setVersion(version.toString).build()
-
 
   private[this] implicit var actorSystem: ActorSystem = _
   private[this] var allAppsStatus: Subject[TaskStatusUpdate] = _
