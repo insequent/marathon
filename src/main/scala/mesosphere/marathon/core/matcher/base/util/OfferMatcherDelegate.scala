@@ -1,11 +1,12 @@
-package mesosphere.marathon.core.matcher.util
+package mesosphere.marathon.core.matcher.base.util
 
 import akka.actor.ActorRef
 import akka.pattern.ask
 import akka.util.Timeout
 import mesosphere.marathon.core.base.Clock
-import mesosphere.marathon.core.matcher.OfferMatcher
-import mesosphere.marathon.core.matcher.OfferMatcher.MatchedTasks
+import mesosphere.marathon.core.matcher.base.OfferMatcher
+import OfferMatcher.MatchedTasks
+import mesosphere.marathon.core.matcher.base.OfferMatcher
 import mesosphere.marathon.state.Timestamp
 import org.apache.mesos.Protos.{ Offer, TaskInfo }
 

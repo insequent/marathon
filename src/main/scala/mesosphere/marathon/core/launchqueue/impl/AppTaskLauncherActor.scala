@@ -6,11 +6,13 @@ import mesosphere.marathon.Protos.MarathonTask
 import mesosphere.marathon.core.base.Clock
 import mesosphere.marathon.core.launchqueue.LaunchQueue.QueuedTaskCount
 import mesosphere.marathon.core.launchqueue.impl.AppTaskLauncherActor.RecheckIfBackOffUntilReached
-import mesosphere.marathon.core.matcher.OfferMatcher
-import mesosphere.marathon.core.matcher.OfferMatcher.{ MatchedTasks, TaskWithSource }
+import mesosphere.marathon.core.matcher.base.OfferMatcher
+import OfferMatcher.{ MatchedTasks, TaskWithSource }
+import mesosphere.marathon.core.matcher.base
+import mesosphere.marathon.core.matcher.base.OfferMatcher
 import mesosphere.marathon.core.matcher.manager.OfferMatcherManager
-import mesosphere.marathon.core.matcher.util.ActorTaskLaunchSource.TaskLaunchNotification
-import mesosphere.marathon.core.matcher.util.{ ActorTaskLaunchSource, ActorOfferMatcher }
+import mesosphere.marathon.core.matcher.base.util.ActorTaskLaunchSource.TaskLaunchNotification
+import mesosphere.marathon.core.matcher.base.util.{ ActorTaskLaunchSource, ActorOfferMatcher }
 import mesosphere.marathon.core.task.bus.TaskStatusObservables.TaskStatusUpdate
 import mesosphere.marathon.core.task.bus.{ MarathonTaskStatus, TaskStatusObservables }
 import mesosphere.marathon.state.{ AppDefinition, Timestamp }
@@ -86,7 +88,7 @@ private class AppTaskLauncherActor(
   /** Like runningTasks but indexed by the taskId String */
   private[this] var runningTasksMap: Map[String, MarathonTask] = _
 
-  /** Decorator to use this actor as a [[mesosphere.marathon.core.matcher.OfferMatcher#TaskLaunchSource]] */
+  /** Decorator to use this actor as a [[base.OfferMatcher#TaskLaunchSource]] */
   private[this] val myselfAsLaunchSource = ActorTaskLaunchSource(self)
 
   override def preStart(): Unit = {

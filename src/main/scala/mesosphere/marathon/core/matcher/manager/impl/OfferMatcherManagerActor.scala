@@ -4,11 +4,12 @@ import akka.actor.{ Actor, ActorLogging, ActorRef, Props }
 import akka.event.LoggingReceive
 import akka.pattern.pipe
 import mesosphere.marathon.core.base.Clock
-import mesosphere.marathon.core.matcher.OfferMatcher
-import mesosphere.marathon.core.matcher.OfferMatcher.{ MatchedTasks, TaskWithSource }
+import mesosphere.marathon.core.matcher.base.OfferMatcher
+import OfferMatcher.{ MatchedTasks, TaskWithSource }
+import mesosphere.marathon.core.matcher.base.OfferMatcher
 import mesosphere.marathon.core.matcher.manager.{ OfferMatcherManagerConfig }
 import mesosphere.marathon.core.matcher.manager.impl.OfferMatcherManagerActor.OfferData
-import mesosphere.marathon.core.matcher.util.ActorOfferMatcher
+import mesosphere.marathon.core.matcher.base.util.ActorOfferMatcher
 import mesosphere.marathon.state.Timestamp
 import mesosphere.marathon.tasks.ResourceUtil
 import org.apache.mesos.Protos.{ Offer, OfferID, Resource }
@@ -79,19 +80,19 @@ private class OfferMatcherManagerActor private (
   }
 
   private[this] def receiveSetLaunchTokens: Receive = {
-    case ActorOfferMatcherManager.SetTaskLaunchTokens(tokens) =>
+    case OfferMatcherManagerDelegate.SetTaskLaunchTokens(tokens) =>
       val tokensBeforeSet = launchTokens
       launchTokens = tokens
       if (tokens > 0 && tokensBeforeSet <= 0)
         updateOffersWanted()
-    case ActorOfferMatcherManager.AddTaskLaunchTokens(tokens) =>
+    case OfferMatcherManagerDelegate.AddTaskLaunchTokens(tokens) =>
       launchTokens += tokens
       if (tokens > 0 && launchTokens == tokens)
         updateOffersWanted()
   }
 
   private[this] def receiveChangingMatchers: Receive = {
-    case ActorOfferMatcherManager.AddOrUpdateMatcher(matcher) =>
+    case OfferMatcherManagerDelegate.AddOrUpdateMatcher(matcher) =>
       if (!matchers(matcher)) {
         log.info("activating matcher {}.", matcher)
         offerQueues.mapValues(_.addMatcher(matcher))
@@ -99,15 +100,15 @@ private class OfferMatcherManagerActor private (
         updateOffersWanted()
       }
 
-      sender() ! ActorOfferMatcherManager.MatcherAdded(matcher)
+      sender() ! OfferMatcherManagerDelegate.MatcherAdded(matcher)
 
-    case ActorOfferMatcherManager.RemoveMatcher(matcher) =>
+    case OfferMatcherManagerDelegate.RemoveMatcher(matcher) =>
       if (matchers(matcher)) {
         log.info("removing matcher {}", matcher)
         matchers -= matcher
         updateOffersWanted()
       }
-      sender() ! ActorOfferMatcherManager.MatcherRemoved(matcher)
+      sender() ! OfferMatcherManagerDelegate.MatcherRemoved(matcher)
   }
 
   private[this] def offersWanted: Boolean = matchers.nonEmpty && launchTokens > 0
@@ -118,7 +119,7 @@ private class OfferMatcherManagerActor private (
       log.debug(s"Ignoring offer ${offer.getId.getValue}: No one interested.")
       sender() ! OfferMatcher.MatchedTasks(offer.getId, Seq.empty)
 
-    case processOffer @ ActorOfferMatcher.MatchOffer(deadline, offer: Offer) =>
+    case ActorOfferMatcher.MatchOffer(deadline, offer: Offer) =>
       log.debug(s"Start processing offer ${offer.getId.getValue}")
 
       // setup initial offer data

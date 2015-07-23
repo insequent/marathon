@@ -74,7 +74,7 @@ private class TaskStatusUpdateActor(
   override def receive: Receive = LoggingReceive {
     case PreparationMessages.PrepareForStart =>
       // we have subscribed in preStart
-      sender() ! PreparationMessages.Prepared
+      sender() ! PreparationMessages.Prepared(self)
 
     case TaskStatusUpdate(timestamp, taskId, WithMesosStatus(status)) =>
       val appId = taskIdUtil.appId(taskId)
@@ -89,7 +89,7 @@ private class TaskStatusUpdateActor(
       status.getState match {
         case TASK_ERROR | TASK_FAILED | TASK_FINISHED | TASK_KILLED | TASK_LOST =>
           // Remove from our internal list
-          taskTracker.terminated(appId, status.getTaskId.getValue).foreach { taskOption =>
+          taskTracker.terminated(appId, taskId.getValue).foreach { taskOption =>
             taskOption match {
               case Some(task) => postEvent(status, task)
               case None       => log.warning(s"Task not found. Do not post event for '{}'", taskId.getValue)
@@ -134,7 +134,7 @@ private class TaskStatusUpdateActor(
         status.getTaskId.getValue,
         status.getState.name,
         if (status.hasMessage) status.getMessage else "",
-        taskIdUtil.appId(status.getTaskId),
+        taskIdUtil.appId(task.getId),
         task.getHost,
         task.getPortsList.asScala,
         task.getVersion

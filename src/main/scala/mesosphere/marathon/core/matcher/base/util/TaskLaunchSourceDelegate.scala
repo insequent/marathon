@@ -1,8 +1,9 @@
-package mesosphere.marathon.core.matcher.util
+package mesosphere.marathon.core.matcher.base.util
 
 import akka.actor.ActorRef
-import mesosphere.marathon.core.matcher.OfferMatcher.TaskLaunchSource
-import mesosphere.marathon.core.matcher.util.ActorTaskLaunchSource.{ TaskLaunchRejected, TaskLaunchAccepted }
+import mesosphere.marathon.core.matcher.base.OfferMatcher
+import OfferMatcher.TaskLaunchSource
+import mesosphere.marathon.core.matcher.base.util.ActorTaskLaunchSource.{ TaskLaunchRejected, TaskLaunchAccepted }
 import org.apache.mesos.Protos.TaskInfo
 
 private class ActorTaskLaunchSource(actorRef: ActorRef) extends TaskLaunchSource {

@@ -38,6 +38,7 @@ object MarathonSchedulerServiceTest {
   val ReconciliationInterval = 5000L
   val ScaleAppsDelay = 4000L
   val ScaleAppsInterval = 4000L
+  val MaxActorStartupTime = 5000L
 
   def mockConfig = {
     val config = mock(classOf[MarathonConf])
@@ -47,6 +48,7 @@ object MarathonSchedulerServiceTest {
     when(config.scaleAppsInitialDelay).thenReturn(scallopOption(Some(ScaleAppsDelay)))
     when(config.scaleAppsInterval).thenReturn(scallopOption(Some(ScaleAppsInterval)))
     when(config.zkTimeoutDuration).thenReturn(1.second)
+    when(config.maxActorStartupTime).thenReturn(scallopOption(Some(MaxActorStartupTime)))
 
     config
   }

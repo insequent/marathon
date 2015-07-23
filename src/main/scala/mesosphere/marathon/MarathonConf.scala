@@ -11,8 +11,7 @@ import mesosphere.marathon.io.storage.StorageProvider
 trait MarathonConf
     extends ScallopConf with ZookeeperConf with LeaderProxyConf
     with LaunchTokenConfig with OfferMatcherManagerConfig with OfferProcessorConfig with ReviveOffersConfig
-    with MarathonSchedulerServiceConfig
-{
+    with MarathonSchedulerServiceConfig {
 
   //scalastyle:off magic.number
 

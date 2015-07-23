@@ -263,7 +263,7 @@ class MarathonSchedulerService @Inject() (
     }
     catch {
       case NonFatal(e) => // catch Scala and Java exceptions
-        log.error(s"Failed to take over leadership: $e")
+        log.error("Failed to take over leadership", e)
 
         increaseOfferLeadershipBackOff()
 

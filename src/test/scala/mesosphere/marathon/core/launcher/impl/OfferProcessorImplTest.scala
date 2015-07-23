@@ -3,8 +3,9 @@ package mesosphere.marathon.core.launcher.impl
 import com.codahale.metrics.MetricRegistry
 import mesosphere.marathon.core.base.{ Clock, ConstantClock }
 import mesosphere.marathon.core.launcher.{ OfferProcessor, OfferProcessorConfig, TaskLauncher }
-import mesosphere.marathon.core.matcher.OfferMatcher
-import mesosphere.marathon.core.matcher.OfferMatcher.{ MatchedTasks, TaskLaunchSource, TaskWithSource }
+import mesosphere.marathon.core.matcher.base.OfferMatcher
+import OfferMatcher.{ MatchedTasks, TaskLaunchSource, TaskWithSource }
+import mesosphere.marathon.core.matcher.base.OfferMatcher
 import mesosphere.marathon.metrics.Metrics
 import mesosphere.marathon.state.Timestamp
 import mesosphere.marathon.{ MarathonSpec, MarathonTestHelper }

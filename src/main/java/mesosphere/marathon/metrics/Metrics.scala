@@ -66,11 +66,11 @@ class Metrics @Inject() (val registry: MetricRegistry) {
 
 object Metrics {
   class Timer(timer: com.codahale.metrics.Timer) {
-    def futureSuccess[T](future: => Future[T]): Future[T] = {
+    def future[T](future: => Future[T]): Future[T] = {
       val startTime = System.nanoTime()
       import scala.concurrent.ExecutionContext.Implicits.global
       val f = future
-      f.onSuccess {
+      f.onComplete {
         case _ => timer.update(System.nanoTime() - startTime, TimeUnit.NANOSECONDS)
       }
       f

@@ -2,8 +2,9 @@ package mesosphere.marathon.core.launcher.impl
 
 import mesosphere.marathon.core.base.Clock
 import mesosphere.marathon.core.launcher.{ OfferProcessor, OfferProcessorConfig, TaskLauncher }
-import mesosphere.marathon.core.matcher.OfferMatcher
-import mesosphere.marathon.core.matcher.OfferMatcher.MatchedTasks
+import mesosphere.marathon.core.matcher.base.OfferMatcher
+import OfferMatcher.MatchedTasks
+import mesosphere.marathon.core.matcher.base.OfferMatcher
 import mesosphere.marathon.metrics.{ MetricPrefixes, Metrics }
 import org.apache.mesos.Protos.Offer
 import org.slf4j.LoggerFactory
@@ -32,7 +33,7 @@ private[launcher] class OfferProcessorImpl(
 
     val deadline = clock.now() + offerMatchingTimeout
 
-    val matchFuture: Future[MatchedTasks] = matchTime.futureSuccess {
+    val matchFuture: Future[MatchedTasks] = matchTime.future {
       offerMatcher.matchOffer(deadline, offer)
     }
 

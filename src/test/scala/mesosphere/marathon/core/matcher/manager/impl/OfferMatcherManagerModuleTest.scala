@@ -1,12 +1,12 @@
 package mesosphere.marathon.core.matcher.manager.impl
 
 import com.codahale.metrics.MetricRegistry
+import mesosphere.marathon.core.matcher.base.OfferMatcher
 import mesosphere.marathon.metrics.Metrics
 import mesosphere.marathon.{ MarathonSchedulerDriverHolder, MarathonTestHelper }
 import mesosphere.marathon.core.base.{ Clock, ShutdownHooks }
 import mesosphere.marathon.core.leadership.AlwaysElectedLeadershipModule
-import mesosphere.marathon.core.matcher.OfferMatcher
-import mesosphere.marathon.core.matcher.OfferMatcher.{ TaskLaunchSource, TaskWithSource, MatchedTasks }
+import OfferMatcher.{ TaskLaunchSource, TaskWithSource, MatchedTasks }
 import mesosphere.marathon.core.matcher.manager.{ OfferMatcherManagerConfig, OfferMatcherManagerModule }
 import mesosphere.marathon.state.Timestamp
 import org.apache.mesos.Protos.{ Offer, TaskInfo }

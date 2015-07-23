@@ -1,6 +1,5 @@
-package mesosphere.marathon.core.matcher
+package mesosphere.marathon.core.matcher.base
 
-import mesosphere.marathon.core.matcher.OfferMatcher.MatchedTasks
 import mesosphere.marathon.state.Timestamp
 import org.apache.mesos.Protos.{ Offer, OfferID, TaskInfo }
 
@@ -44,5 +43,5 @@ trait OfferMatcher {
     * The offer matcher can expect either a taskLaunchAccepted or a taskLaunchRejected call
     * for every returned `org.apache.mesos.Protos.TaskInfo`.
     */
-  def matchOffer(deadline: Timestamp, offer: Offer): Future[MatchedTasks]
+  def matchOffer(deadline: Timestamp, offer: Offer): Future[OfferMatcher.MatchedTasks]
 }

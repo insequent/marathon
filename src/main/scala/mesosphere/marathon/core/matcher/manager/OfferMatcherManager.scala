@@ -1,6 +1,6 @@
 package mesosphere.marathon.core.matcher.manager
 
-import mesosphere.marathon.core.matcher.OfferMatcher
+import mesosphere.marathon.core.matcher.base.OfferMatcher
 
 import scala.concurrent.{ ExecutionContext, Future }
 
