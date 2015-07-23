@@ -30,7 +30,7 @@ import org.apache.mesos.Protos.FrameworkID
 import org.apache.mesos.SchedulerDriver
 
 import scala.collection.immutable.Seq
-import scala.concurrent.duration.{ MILLISECONDS, _ }
+import scala.concurrent.duration._
 import scala.concurrent.{ Await, Future, TimeoutException }
 import scala.util.control.NonFatal
 import scala.util.{ Failure, Success }
@@ -252,7 +252,7 @@ class MarathonSchedulerService @Inject() (
       //execute tasks, only the leader is allowed to
       migration.migrate()
 
-      Await.result(leadershipCoordinator.prepareForStart(), 10.seconds)
+      Await.result(leadershipCoordinator.prepareForStart(), config.maxActorStartupTime().milliseconds)
       driverHandlesAbdication = true
 
       // We have been elected. Thus, elect leadership with the abdication command.

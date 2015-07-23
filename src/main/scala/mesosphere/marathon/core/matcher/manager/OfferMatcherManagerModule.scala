@@ -14,7 +14,7 @@ import scala.util.Random
 
 class OfferMatcherManagerModule(
     clock: Clock, random: Random, metrics: Metrics,
-    offerMatcherConfig: OfferMatcherConfig,
+    offerMatcherConfig: OfferMatcherManagerConfig,
     leadershipModule: LeadershipModule) {
 
   private[this] lazy val offersWanted: Subject[Boolean] = PublishSubject[Boolean]()

@@ -6,7 +6,7 @@ import akka.pattern.pipe
 import mesosphere.marathon.core.base.Clock
 import mesosphere.marathon.core.matcher.OfferMatcher
 import mesosphere.marathon.core.matcher.OfferMatcher.{ MatchedTasks, TaskWithSource }
-import mesosphere.marathon.core.matcher.manager.{ OfferMatcherConfig }
+import mesosphere.marathon.core.matcher.manager.{ OfferMatcherManagerConfig }
 import mesosphere.marathon.core.matcher.manager.impl.OfferMatcherManagerActor.OfferData
 import mesosphere.marathon.core.matcher.util.ActorOfferMatcher
 import mesosphere.marathon.state.Timestamp
@@ -27,7 +27,7 @@ import scala.util.control.NonFatal
 private[manager] object OfferMatcherManagerActor {
   def props(
     random: Random, clock: Clock,
-    offerMatcherConfig: OfferMatcherConfig, offersWanted: Observer[Boolean]): Props = {
+    offerMatcherConfig: OfferMatcherManagerConfig, offersWanted: Observer[Boolean]): Props = {
     Props(new OfferMatcherManagerActor(random, clock, offerMatcherConfig, offersWanted))
   }
 
@@ -61,7 +61,7 @@ private[manager] object OfferMatcherManagerActor {
 }
 
 private class OfferMatcherManagerActor private (
-  random: Random, clock: Clock, conf: OfferMatcherConfig, offersWantedObserver: Observer[Boolean])
+  random: Random, clock: Clock, conf: OfferMatcherManagerConfig, offersWantedObserver: Observer[Boolean])
     extends Actor with ActorLogging {
   private[this] var launchTokens: Int = 0
 

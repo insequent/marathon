@@ -7,7 +7,7 @@ import mesosphere.marathon.core.base.{ Clock, ShutdownHooks }
 import mesosphere.marathon.core.leadership.AlwaysElectedLeadershipModule
 import mesosphere.marathon.core.matcher.OfferMatcher
 import mesosphere.marathon.core.matcher.OfferMatcher.{ TaskLaunchSource, TaskWithSource, MatchedTasks }
-import mesosphere.marathon.core.matcher.manager.{ OfferMatcherConfig, OfferMatcherManagerModule }
+import mesosphere.marathon.core.matcher.manager.{ OfferMatcherManagerConfig, OfferMatcherManagerModule }
 import mesosphere.marathon.state.Timestamp
 import org.apache.mesos.Protos.{ Offer, TaskInfo }
 import org.scalatest.{ BeforeAndAfter, FunSuite }
@@ -129,7 +129,7 @@ class OfferMatcherManagerModuleTest extends FunSuite with BeforeAndAfter {
     clock = Clock()
     val random = Random
     val actorSystem = AlwaysElectedLeadershipModule(shutdownHookModule)
-    val config = new OfferMatcherConfig {}
+    val config = new OfferMatcherManagerConfig {}
     config.afterInit()
     module = new OfferMatcherManagerModule(clock, random, new Metrics(new MetricRegistry), config, actorSystem)
   }
