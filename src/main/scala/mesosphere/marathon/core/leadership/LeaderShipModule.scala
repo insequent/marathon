@@ -13,18 +13,18 @@ class LeadershipModule(actorRefFactory: ActorRefFactory) {
   private[this] var started: Boolean = false
 
   /**
-   * Create a wrapper around an actor which should only be active if this instance of Marathon is the
-   * current leader instance. The wrapper starts the actor with the given props when appropriate and stops
-   * it when this instance loses Leadership. If the wrapper receives messages while not being the leader,
-   * it answers all messages with Status.Failure messages.
-   *
-   * @param props the props to create the actor
-   * @param name the name of the actor (the wrapping actor will be named like this)
-   * @param considerPreparedOnStart whether the actor is ready to receive messages as soon as it is started.
-   *                                if false, the actor expects a PreparationMessages.PrepareToStart message
-   *                                and is assumed to be ready when it replies with PreparationMessages.Prepared.
-   * @return
-   */
+    * Create a wrapper around an actor which should only be active if this instance of Marathon is the
+    * current leader instance. The wrapper starts the actor with the given props when appropriate and stops
+    * it when this instance loses Leadership. If the wrapper receives messages while not being the leader,
+    * it answers all messages with Status.Failure messages.
+    *
+    * @param props the props to create the actor
+    * @param name the name of the actor (the wrapping actor will be named like this)
+    * @param considerPreparedOnStart whether the actor is ready to receive messages as soon as it is started.
+    *                                if false, the actor expects a PreparationMessages.PrepareToStart message
+    *                                and is assumed to be ready when it replies with PreparationMessages.Prepared.
+    * @return
+    */
   def startWhenLeader(props: => Props, name: String, considerPreparedOnStart: Boolean = true): ActorRef = {
     require(!started, "already started")
     val proxyProps = WhenLeaderActor.props(props)

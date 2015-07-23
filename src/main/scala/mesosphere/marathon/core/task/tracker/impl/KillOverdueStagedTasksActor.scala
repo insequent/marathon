@@ -1,13 +1,13 @@
-package mesosphere.marathon.core.task.tracker
+package mesosphere.marathon.core.task.tracker.impl
 
-import akka.actor.{ Props, Actor, ActorLogging, Cancellable }
+import akka.actor.{ Actor, ActorLogging, Cancellable, Props }
 import mesosphere.marathon.MarathonSchedulerDriverHolder
 import mesosphere.marathon.tasks.TaskTracker
 import mesosphere.mesos.protos.TaskID
 
 import scala.concurrent.duration._
 
-private[core] object KillOverdueStagedTasksActor {
+private[tracker] object KillOverdueStagedTasksActor {
   def props(taskTracker: TaskTracker, driverHolder: MarathonSchedulerDriverHolder): Props = {
     Props(new KillOverdueStagedTasksActor(taskTracker, driverHolder))
   }

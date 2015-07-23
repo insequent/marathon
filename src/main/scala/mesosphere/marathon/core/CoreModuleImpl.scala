@@ -2,20 +2,20 @@ package mesosphere.marathon.core
 
 import akka.actor.ActorSystem
 import com.google.inject.Inject
-import mesosphere.marathon.core.task.tracker.KillOverdueStagedTasksActor
-import mesosphere.marathon.metrics.Metrics
-import mesosphere.marathon.{ MarathonConf, MarathonSchedulerDriverHolder }
 import mesosphere.marathon.api.LeaderInfo
 import mesosphere.marathon.core.base.actors.ActorsModule
 import mesosphere.marathon.core.base.{ Clock, ShutdownHooks }
-import mesosphere.marathon.core.flow.FlowActors
+import mesosphere.marathon.core.flow.FlowModule
 import mesosphere.marathon.core.launcher.LauncherModule
 import mesosphere.marathon.core.launchqueue.LaunchQueueModule
 import mesosphere.marathon.core.leadership.LeadershipModule
 import mesosphere.marathon.core.matcher.manager.OfferMatcherManagerModule
 import mesosphere.marathon.core.task.bus.TaskBusModule
+import mesosphere.marathon.core.task.tracker.TaskTrackerModule
+import mesosphere.marathon.metrics.Metrics
 import mesosphere.marathon.state.AppRepository
 import mesosphere.marathon.tasks.{ TaskFactory, TaskTracker }
+import mesosphere.marathon.{ MarathonConf, MarathonSchedulerDriverHolder }
 
 import scala.util.Random
 
@@ -25,7 +25,7 @@ import scala.util.Random
   * Its parameters represent guice wired dependencies.
   * [[CoreGuiceModule]] exports some dependencies back to guice.
   */
-class DefaultCoreModule @Inject() (
+class CoreModuleImpl @Inject() (
     // external dependencies still wired by guice
     marathonConf: MarathonConf,
     metrics: Metrics,
@@ -46,7 +46,8 @@ class DefaultCoreModule @Inject() (
   // CORE
 
   lazy val leadershipModule = new LeadershipModule(actorsModule.actorRefFactory)
-  override lazy val taskBusModule = TaskBusModule()
+  override lazy val taskBusModule = new TaskBusModule()
+  override lazy val taskTrackerModule = new TaskTrackerModule(leadershipModule)
 
   private[this] lazy val offerMatcherManagerModule = new OfferMatcherManagerModule(
     // infrastructure
@@ -79,13 +80,9 @@ class DefaultCoreModule @Inject() (
 
   // MAINTENANCE TASKS
 
-  leadershipModule.startWhenLeader(
-    KillOverdueStagedTasksActor.props(taskTracker, marathonSchedulerDriverHolder),
-    "killOverdueStagedTasks")
-
   // FLOW CONTROL GLUE
 
-  private[this] val flowActors = new FlowActors(leadershipModule)
+  private[this] val flowActors = new FlowModule(leadershipModule)
   flowActors.refillOfferMatcherLaunchTokensForEveryStagedTask(
     marathonConf, taskBusModule.taskStatusObservables, offerMatcherManagerModule.subOfferMatcherManager)
   flowActors.reviveOffersWhenOfferMatcherManagerSignalsInterest(

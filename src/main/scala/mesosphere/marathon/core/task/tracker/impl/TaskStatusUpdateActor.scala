@@ -1,4 +1,4 @@
-package mesosphere.marathon.core.task.tracker
+package mesosphere.marathon.core.task.tracker.impl
 
 import javax.inject.Named
 
@@ -20,7 +20,7 @@ import rx.lang.scala.Subscription
 
 import scala.util.{ Failure, Success }
 
-private[core] object TaskStatusUpdateActor {
+private[tracker] object TaskStatusUpdateActor {
   def props(
     taskStatusObservable: TaskStatusObservables,
     @Named(EventModule.busName) eventBus: EventStream,

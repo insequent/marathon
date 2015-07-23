@@ -8,7 +8,7 @@ import mesosphere.marathon.core.matcher.manager.OfferMatcherManager
 import mesosphere.marathon.core.task.bus.TaskStatusObservables
 import rx.lang.scala.Observable
 
-class FlowActors(leadershipModule: LeadershipModule) {
+class FlowModule(leadershipModule: LeadershipModule) {
   def reviveOffersWhenOfferMatcherManagerSignalsInterest(
     clock: Clock, conf: ReviveOffersConfig,
     offersWanted: Observable[Boolean], driverHolder: MarathonSchedulerDriverHolder): Unit = {

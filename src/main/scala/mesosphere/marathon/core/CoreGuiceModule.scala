@@ -13,7 +13,7 @@ import mesosphere.marathon.core.launcher.OfferProcessor
 import mesosphere.marathon.core.launchqueue.LaunchQueue
 import mesosphere.marathon.core.leadership.{ LeadershipCoordinator, LeadershipModule }
 import mesosphere.marathon.core.task.bus.{ TaskStatusEmitter, TaskStatusObservables }
-import mesosphere.marathon.core.task.tracker.TaskStatusUpdateActor
+import mesosphere.marathon.core.task.tracker.TaskTrackerModule
 import mesosphere.marathon.event.EventModule
 import mesosphere.marathon.health.HealthCheckManager
 import mesosphere.marathon.tasks.{ TaskIdUtil, TaskTracker }
@@ -47,10 +47,14 @@ class CoreGuiceModule extends AbstractModule {
     coreModule.taskBusModule.taskStatusObservables
 
   @Provides @Singleton
+  def taskTrackerModule(coreModule: CoreModule): TaskTrackerModule =
+    coreModule.taskTrackerModule
+
+  @Provides @Singleton
   final def taskQueue(coreModule: CoreModule): LaunchQueue = coreModule.appOfferMatcherModule.taskQueue
 
   override def configure(): Unit = {
-    bind(classOf[CoreModule]).to(classOf[DefaultCoreModule]).in(Scopes.SINGLETON)
+    bind(classOf[CoreModule]).to(classOf[CoreModuleImpl]).in(Scopes.SINGLETON)
     bind(classOf[ActorRef])
       .annotatedWith(Names.named("taskStatusUpdate"))
       .toProvider(classOf[TaskStatusUpdateActorProvider])
@@ -59,8 +63,9 @@ class CoreGuiceModule extends AbstractModule {
 }
 
 object CoreGuiceModule {
+  /** Break cyclic dependencies by using a provider here. */
   class TaskStatusUpdateActorProvider @Inject() (
-      leadershipModule: LeadershipModule,
+      taskTrackerModule: TaskTrackerModule,
       taskStatusObservable: TaskStatusObservables,
       @Named(EventModule.busName) eventBus: EventStream,
       @Named("schedulerActor") schedulerActor: ActorRef,
@@ -70,11 +75,15 @@ object CoreGuiceModule {
       marathonSchedulerDriverHolder: MarathonSchedulerDriverHolder) extends Provider[ActorRef] {
 
     override def get(): ActorRef = {
-      val props = TaskStatusUpdateActor.props(
-        taskStatusObservable, eventBus, schedulerActor, taskIdUtil, healthCheckManager, taskTracker,
-        marathonSchedulerDriverHolder
+      taskTrackerModule.processTaskStatusUpdates(
+        taskStatusObservable = taskStatusObservable,
+        eventBus = eventBus,
+        schedulerActor = schedulerActor,
+        taskIdUtil = taskIdUtil,
+        healthCheckManager = healthCheckManager,
+        taskTracker = taskTracker,
+        marathonSchedulerDriverHolder = marathonSchedulerDriverHolder
       )
-      leadershipModule.startWhenLeader(props, "taskStatusUpdate", considerPreparedOnStart = false)
     }
   }
 }
