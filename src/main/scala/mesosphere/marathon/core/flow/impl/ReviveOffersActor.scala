@@ -46,23 +46,27 @@ private class ReviveOffersActor(
 
     val now: Timestamp = clock.now()
     val nextRevive = lastRevive + conf.minReviveOffersInterval().milliseconds
-    nextReviveCancellableOpt.foreach(_.cancel())
-    nextReviveCancellableOpt = None
 
     if (nextRevive <= now) {
+      nextReviveCancellableOpt.foreach(_.cancel())
+      nextReviveCancellableOpt = None
+
       log.debug("Revive offers")
       driverHolder.driver.foreach(_.reviveOffers())
       lastRevive = now
     }
     else {
-      nextReviveCancellableOpt = Some(schedulerCheck(now until nextRevive))
+      if (nextReviveCancellableOpt.isEmpty) {
+        nextReviveCancellableOpt = Some(schedulerCheck(now until nextRevive))
+      }
     }
   }
 
   override def receive: Receive = LoggingReceive {
     case true                                        => reviveOffers()
     case ReviveOffersActor.Check if previouslyWanted => reviveOffers()
-    case bool: Boolean                               => previouslyWanted = bool
+    case ReviveOffersActor.Check                     => log.debug("ignore check because no offers wanted anymore")
+    case false                                       => previouslyWanted = false
   }
 
   protected def schedulerCheck(duration: FiniteDuration): Cancellable = {

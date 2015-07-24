@@ -46,6 +46,7 @@ private class OfferMatcherLaunchTokensActor(
 
   override def postStop(): Unit = {
     taskStatusUpdateSubscription.unsubscribe()
+    periodicSetToken.cancel()
   }
 
   private[this] def healthy(status: TaskStatus): Boolean = !status.hasHealthy || status.getHealthy

@@ -79,6 +79,7 @@ private class AppTaskLauncherActor(
     private[this] var tasksToLaunch: Int) extends Actor with ActorLogging with Stash {
 
   private[this] var inFlightTaskLaunches = Set.empty[TaskID]
+  private[this] var recheckBackOff: Option[Cancellable] = None
   private[this] var backOffUntil: Option[Timestamp] = None
 
   /** Receive task updates to keep task list up-to-date. */
@@ -110,6 +111,7 @@ private class AppTaskLauncherActor(
   override def postStop(): Unit = {
     taskStatusUpdateSubscription.unsubscribe()
     OfferMatcherRegistration.unregister()
+    recheckBackOff.foreach(_.cancel())
 
     super.postStop()
 
@@ -167,12 +169,15 @@ private class AppTaskLauncherActor(
       if (backOffUntil.forall(_ < delayUntil)) {
         import context.dispatcher
         val now: Timestamp = clock.now()
-        context.system.scheduler.scheduleOnce(now until delayUntil, self, RecheckIfBackOffUntilReached)
+        recheckBackOff.foreach(_.cancel())
+        recheckBackOff = Some(
+          context.system.scheduler.scheduleOnce(now until delayUntil, self, RecheckIfBackOffUntilReached)
+        )
       }
 
       backOffUntil = Some(delayUntil)
       OfferMatcherRegistration.manageOfferMatcherStatus()
-      log.info("{}", status)
+      log.debug("After delay update {}", status)
 
     case RecheckIfBackOffUntilReached => OfferMatcherRegistration.manageOfferMatcherStatus()
   }

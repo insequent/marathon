@@ -25,15 +25,16 @@ private[launcher] class OfferProcessorImpl(
   private[this] val log = LoggerFactory.getLogger(getClass)
   private[this] val offerMatchingTimeout = conf.offerMatchingTimeout().millis
 
-  private[this] val incomingOffers = metrics.meter(metrics.name(MetricPrefixes.SERVICE, getClass, "incomingOffers"))
-  private[this] val matchTime = metrics.timer(metrics.name(MetricPrefixes.SERVICE, getClass, "matchTime"))
+  private[this] val incomingOffersMeter =
+    metrics.meter(metrics.name(MetricPrefixes.SERVICE, getClass, "incomingOffers"))
+  private[this] val matchTimeMeter = metrics.timer(metrics.name(MetricPrefixes.SERVICE, getClass, "matchTime"))
 
   override def processOffer(offer: Offer): Future[Unit] = {
-    incomingOffers.mark()
+    incomingOffersMeter.mark()
 
     val deadline = clock.now() + offerMatchingTimeout
 
-    val matchFuture: Future[MatchedTasks] = matchTime.future {
+    val matchFuture: Future[MatchedTasks] = matchTimeMeter.timeFuture {
       offerMatcher.matchOffer(deadline, offer)
     }
 

@@ -2,7 +2,7 @@ package mesosphere.marathon.core.launchqueue.impl
 
 import mesosphere.marathon.Protos.MarathonTask
 import mesosphere.marathon.core.base.{ Clock, ShutdownHooks }
-import mesosphere.marathon.core.launchqueue.LaunchQueueModule
+import mesosphere.marathon.core.launchqueue.{ LaunchQueueConfig, LaunchQueueModule }
 import mesosphere.marathon.core.leadership.AlwaysElectedLeadershipModule
 import mesosphere.marathon.core.matcher.DummyOfferMatcherManager
 import mesosphere.marathon.core.task.bus.TaskBusModule
@@ -223,7 +223,10 @@ class LaunchQueueModuleTest extends MarathonSpec with BeforeAndAfter with GivenW
     taskFactory = mock[TaskFactory]("taskFactory")
     appRepository = mock[AppRepository]("appRepository")
 
+    val config: LaunchQueueConfig = new LaunchQueueConfig {}
+    config.afterInit()
     module = new LaunchQueueModule(
+      config,
       AlwaysElectedLeadershipModule(shutdownHooks),
       clock,
       subOfferMatcherManager = offerMatcherManager,

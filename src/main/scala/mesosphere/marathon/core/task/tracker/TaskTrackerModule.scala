@@ -9,6 +9,9 @@ import mesosphere.marathon.core.task.tracker.impl.{ TaskStatusUpdateActor, KillO
 import mesosphere.marathon.health.HealthCheckManager
 import mesosphere.marathon.tasks.{ TaskIdUtil, TaskTracker }
 
+/**
+  * This module provides some glue between the task tracker, status updates and various components in the application.
+  */
 class TaskTrackerModule(leadershipModule: LeadershipModule) {
   def killOverdueTasks(taskTracker: TaskTracker, marathonSchedulerDriverHolder: MarathonSchedulerDriverHolder): Unit = {
     leadershipModule.startWhenLeader(

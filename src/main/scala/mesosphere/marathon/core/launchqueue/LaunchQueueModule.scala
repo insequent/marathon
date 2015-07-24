@@ -3,7 +3,7 @@ package mesosphere.marathon.core.launchqueue
 import akka.actor.{ ActorRef, Props }
 import mesosphere.marathon.core.base.Clock
 import mesosphere.marathon.core.launchqueue.impl.{
-  ActorLaunchQueue,
+  LaunchQueueDelegate,
   AppTaskLauncherActor,
   LaunchQueueActor,
   RateLimiter,
@@ -15,7 +15,11 @@ import mesosphere.marathon.core.task.bus.TaskStatusObservables
 import mesosphere.marathon.state.{ AppDefinition, AppRepository }
 import mesosphere.marathon.tasks.{ TaskFactory, TaskTracker }
 
+/**
+  * Provides a [[LaunchQueue]] implementation which can be used to launch tasks for a given AppDefinition.
+  */
 class LaunchQueueModule(
+    config: LaunchQueueConfig,
     leadershipModule: LeadershipModule,
     clock: Clock,
     subOfferMatcherManager: OfferMatcherManager,
@@ -25,7 +29,7 @@ class LaunchQueueModule(
     taskFactory: TaskFactory) {
 
   private[this] val taskQueueActorRef: ActorRef = {
-    val props = LaunchQueueActor.props(appActorProps)
+    val props = LaunchQueueActor.props(config, appActorProps)
     leadershipModule.startWhenLeader(props, "launchQueue")
   }
   private[this] val rateLimiter: RateLimiter = new RateLimiter(clock)
@@ -36,7 +40,7 @@ class LaunchQueueModule(
     leadershipModule.startWhenLeader(props, "rateLimiter")
   }
 
-  val taskQueue: LaunchQueue = new ActorLaunchQueue(taskQueueActorRef, rateLimiterActor)
+  val taskQueue: LaunchQueue = new LaunchQueueDelegate(config, taskQueueActorRef, rateLimiterActor)
 
   private[this] def appActorProps(app: AppDefinition, count: Int): Props =
     AppTaskLauncherActor.props(

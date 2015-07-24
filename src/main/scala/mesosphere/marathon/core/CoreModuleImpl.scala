@@ -65,6 +65,7 @@ class CoreModuleImpl @Inject() (
     offerMatcherManagerModule.globalOfferMatcher)
 
   override lazy val appOfferMatcherModule = new LaunchQueueModule(
+    marathonConf,
     leadershipModule, clock,
 
     // internal core dependencies
@@ -82,7 +83,7 @@ class CoreModuleImpl @Inject() (
   // FLOW CONTROL GLUE
 
   private[this] val flowActors = new FlowModule(leadershipModule)
-  flowActors.refillOfferMatcherLaunchTokensForEveryStagedTask(
+  flowActors.refillOfferMatcherManagerLaunchTokens(
     marathonConf, taskBusModule.taskStatusObservables, offerMatcherManagerModule.subOfferMatcherManager)
   flowActors.reviveOffersWhenOfferMatcherManagerSignalsInterest(
     clock, marathonConf,

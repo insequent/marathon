@@ -32,7 +32,7 @@ class ReviveOffersActorTest extends MarathonSpec {
     assert(actorRef.underlyingActor.scheduled == Vector(5.seconds))
   }
 
-  test("the third true reschedules") {
+  test("the third true has no effect") {
     actorRef.start()
     offersWanted.onNext(true)
     offersWanted.onNext(true)
@@ -40,8 +40,6 @@ class ReviveOffersActorTest extends MarathonSpec {
     offersWanted.onNext(true)
 
     Mockito.verify(driver).reviveOffers()
-    Mockito.verify(actorRef.underlyingActor.cancellable).cancel()
-    assert(actorRef.underlyingActor.scheduled == Vector(5.seconds, 2.seconds))
   }
 
   test("Check revives if last offersWanted == true and more than 5.seconds ago") {

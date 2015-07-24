@@ -7,6 +7,13 @@ import mesosphere.marathon.core.leadership.impl.{
   WhenLeaderActor
 }
 
+/**
+  * This module provides a utility function for starting actors only when our instance is the current leader.
+  * This should be used for all normal top-level actors.
+  *
+  * In addition, it exports the coordinator which coordinates the activity performed when elected or stopped.
+  * The leadership election logic needs to call the appropriate methods for this module to work.
+  */
 class LeadershipModule(actorRefFactory: ActorRefFactory) {
 
   private[this] var whenLeaderRefs = Set.empty[ActorRef]

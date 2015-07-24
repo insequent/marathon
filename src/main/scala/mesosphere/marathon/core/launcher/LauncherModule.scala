@@ -6,6 +6,10 @@ import mesosphere.marathon.core.launcher.impl.{ OfferProcessorImpl, TaskLauncher
 import mesosphere.marathon.core.matcher.base.OfferMatcher
 import mesosphere.marathon.metrics.Metrics
 
+/**
+  * This module contains the glue code between matching tasks to resource offers
+  * and actually launching the matched tasks.
+  */
 class LauncherModule(
     clock: Clock,
     metrics: Metrics,

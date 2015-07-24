@@ -14,7 +14,7 @@ import akka.actor.{
 import akka.event.LoggingReceive
 import akka.pattern.{ ask, pipe }
 import akka.util.Timeout
-import mesosphere.marathon.core.launchqueue.LaunchQueue
+import mesosphere.marathon.core.launchqueue.{ LaunchQueueConfig, LaunchQueue }
 import mesosphere.marathon.state.{ AppDefinition, PathId }
 import LaunchQueue.QueuedTaskCount
 
@@ -23,8 +23,8 @@ import scala.concurrent.duration._
 import scala.util.control.NonFatal
 
 private[launchqueue] object LaunchQueueActor {
-  def props(appActorProps: (AppDefinition, Int) => Props): Props = {
-    Props(new LaunchQueueActor(appActorProps))
+  def props(config: LaunchQueueConfig, appActorProps: (AppDefinition, Int) => Props): Props = {
+    Props(new LaunchQueueActor(config, appActorProps))
   }
 
   case class FullCount(appId: PathId)
@@ -33,10 +33,12 @@ private[launchqueue] object LaunchQueueActor {
 /**
   * An actor-based implementation of the [[LaunchQueue]] interface.
   *
-  * The methods of that interface are translated to messages in the [[ActorLaunchQueue]] implementation.
+  * The methods of that interface are translated to messages in the [[LaunchQueueDelegate]] implementation.
   */
-private[impl] class LaunchQueueActor(appActorProps: (AppDefinition, Int) => Props) extends Actor with ActorLogging {
-  import ActorLaunchQueue._
+private[impl] class LaunchQueueActor(
+    launchQueueConfig: LaunchQueueConfig,
+    appActorProps: (AppDefinition, Int) => Props) extends Actor with ActorLogging {
+  import LaunchQueueDelegate._
 
   /** Currently active actors by pathId. */
   var launchers = Map.empty[PathId, ActorRef]
@@ -52,10 +54,10 @@ private[impl] class LaunchQueueActor(appActorProps: (AppDefinition, Int) => Prop
   /** PathIds for which the actors have been currently suspended because we wait for their termination. */
   var suspendedLauncherPathIds = Set.empty[PathId]
   /** ActorRefs of the actors have been currently suspended because we wait for their termination. */
-  var suspendedLaunchersMessages = Map.empty[ActorRef, Vector[DeferredMessage]].withDefault(_ => Vector.empty)
+  var suspendedLaunchersMessages = Map.empty[ActorRef, Vector[DeferredMessage]].withDefaultValue(Vector.empty)
 
   /** The timeout for asking any children of this actor. */
-  implicit val askTimeout: Timeout = 3.seconds
+  implicit val askTimeout: Timeout = launchQueueConfig.launchQueueRequestTimeout().milliseconds
 
   override def receive: Receive = LoggingReceive {
     Seq(
