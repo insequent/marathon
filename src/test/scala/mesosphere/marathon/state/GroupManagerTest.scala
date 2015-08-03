@@ -42,11 +42,10 @@ class GroupManagerTest extends TestKit(ActorSystem("System")) with MockitoSugar 
   test("Assign dynamic service ports specified in the container") {
     import Container.Docker
     import Docker.PortMapping
-    import org.apache.mesos.Protos.ContainerInfo.DockerInfo.Network
     val container = Container(
       docker = Some(Docker(
         image = "busybox",
-        network = Some(Network.BRIDGE),
+        network = "bridge",
         portMappings = Some(Seq(
           PortMapping(containerPort = 8080, hostPort = 0, servicePort = 0, protocol = "tcp"),
           PortMapping (containerPort = 9000, hostPort = 10555, servicePort = 10555, protocol = "udp"),
@@ -66,11 +65,10 @@ class GroupManagerTest extends TestKit(ActorSystem("System")) with MockitoSugar 
   test("Export non-dynamic service ports specified in the container to the ports field") {
     import Container.Docker
     import Docker.PortMapping
-    import org.apache.mesos.Protos.ContainerInfo.DockerInfo.Network
     val container = Container(
       docker = Some(Docker(
         image = "busybox",
-        network = Some(Network.BRIDGE),
+        network = "bridge",
         portMappings = Some(Seq(
           PortMapping(containerPort = 8080, hostPort = 0, servicePort = 80, protocol = "tcp"),
           PortMapping (containerPort = 9000, hostPort = 10555, servicePort = 81, protocol = "udp")

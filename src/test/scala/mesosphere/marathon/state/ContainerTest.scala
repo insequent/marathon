@@ -28,7 +28,7 @@ class ContainerTest extends MarathonSpec with Matchers {
       docker = Some(
         Container.Docker(
           image = "group/image",
-          network = Some(mesos.ContainerInfo.DockerInfo.Network.BRIDGE),
+          network = "bridge",
           portMappings = Some(Seq(
             Container.Docker.PortMapping(8080, 32001, 9000, "tcp"),
             Container.Docker.PortMapping(8081, 32002, 9001, "udp")
@@ -43,7 +43,7 @@ class ContainerTest extends MarathonSpec with Matchers {
       docker = Some(
         Container.Docker(
           image = "group/image",
-          network = Some(mesos.ContainerInfo.DockerInfo.Network.NONE),
+          network = "none",
           privileged = true,
           parameters = Seq(
             Parameter("abc", "123"),
@@ -59,7 +59,7 @@ class ContainerTest extends MarathonSpec with Matchers {
       docker = Some(
         Container.Docker(
           image = "group/image",
-          network = Some(mesos.ContainerInfo.DockerInfo.Network.NONE),
+          network = "none",
           privileged = true,
           parameters = Seq(
             Parameter("abc", "123"),
@@ -87,7 +87,7 @@ class ContainerTest extends MarathonSpec with Matchers {
     val proto2: mesosphere.marathon.Protos.ExtendedContainerInfo = f.container2.toProto
     assert(mesos.ContainerInfo.Type.DOCKER == proto2.getType)
     assert("group/image" == proto2.getDocker.getImage)
-    assert(f.container2.docker.get.network == Some(proto2.getDocker.getNetwork))
+    assert(f.container2.docker.get.network == proto2.getDocker.getNetwork)
     val portMappings = proto2.getDocker.getPortMappingsList.asScala
     assert(f.container2.docker.get.portMappings == Some(portMappings.map(Container.Docker.PortMapping.apply)))
     assert(proto2.getDocker.hasForcePullImage)
@@ -96,7 +96,7 @@ class ContainerTest extends MarathonSpec with Matchers {
     val proto3 = f.container3.toProto
     assert(mesos.ContainerInfo.Type.DOCKER == proto3.getType)
     assert("group/image" == proto3.getDocker.getImage)
-    assert(f.container3.docker.get.network == Some(proto3.getDocker.getNetwork))
+    assert(f.container3.docker.get.network == proto3.getDocker.getNetwork)
     assert(f.container3.docker.get.privileged == proto3.getDocker.getPrivileged)
     assert(f.container3.docker.get.parameters.map(_.key) == proto3.getDocker.getParametersList.asScala.map(_.getKey))
     assert(f.container3.docker.get.parameters.map(_.value) == proto3.getDocker.getParametersList.asScala.map(_.getValue))
@@ -117,7 +117,7 @@ class ContainerTest extends MarathonSpec with Matchers {
     val proto2 = f.container2.toMesos
     assert(mesos.ContainerInfo.Type.DOCKER == proto2.getType)
     assert("group/image" == proto2.getDocker.getImage)
-    assert(f.container2.docker.get.network == Some(proto2.getDocker.getNetwork))
+    assert(f.container2.docker.get.network == proto2.getDocker.getNetwork)
 
     val expectedPortMappings = Seq(
       mesos.ContainerInfo.DockerInfo.PortMapping.newBuilder
@@ -139,7 +139,7 @@ class ContainerTest extends MarathonSpec with Matchers {
     val proto3 = f.container3.toMesos
     assert(mesos.ContainerInfo.Type.DOCKER == proto3.getType)
     assert("group/image" == proto3.getDocker.getImage)
-    assert(f.container3.docker.get.network == Some(proto3.getDocker.getNetwork))
+    assert(f.container3.docker.get.network == proto3.getDocker.getNetwork)
     assert(f.container3.docker.get.privileged == proto3.getDocker.getPrivileged)
     assert(f.container3.docker.get.parameters.map(_.key) == proto3.getDocker.getParametersList.asScala.map(_.getKey))
     assert(f.container3.docker.get.parameters.map(_.value) == proto3.getDocker.getParametersList.asScala.map(_.getValue))
@@ -229,7 +229,7 @@ class ContainerTest extends MarathonSpec with Matchers {
         "type": "DOCKER",
         "docker": {
           "image": "group/image",
-          "network": "BRIDGE",
+          "network": "bridge",
           "portMappings": [
             { "containerPort": 8080, "hostPort": 32001, "servicePort": 9000, "protocol": "tcp"},
             { "containerPort": 8081, "hostPort": 32002, "servicePort": 9001, "protocol": "udp"}
@@ -251,7 +251,7 @@ class ContainerTest extends MarathonSpec with Matchers {
         "type": "DOCKER",
         "docker": {
           "image": "group/image",
-          "network": "NONE",
+          "network": "none",
           "privileged": true,
           "parameters": [
             { "key": "abc", "value": "123" },
@@ -271,7 +271,7 @@ class ContainerTest extends MarathonSpec with Matchers {
         "type": "DOCKER",
         "docker": {
           "image": "group/image",
-          "network": "NONE",
+          "network": "none",
           "privileged": true,
           "parameters": [
             { "key": "abc", "value": "123" },

@@ -9,7 +9,6 @@ import mesosphere.marathon.state.PathId._
 import mesosphere.marathon.state.{ AppDefinition, Container, PathId, Timestamp }
 import mesosphere.marathon.tasks.{ MarathonTasks, TaskTracker }
 import mesosphere.mesos.protos.{ Resource, TaskID, _ }
-import org.apache.mesos.Protos.ContainerInfo.DockerInfo.Network
 import org.apache.mesos.Protos.{ Offer, _ }
 import org.mockito.Mockito._
 import org.mockito.invocation.InvocationOnMock
@@ -382,7 +381,7 @@ class TaskBuilderTest extends MarathonSpec {
         executor = "//cmd",
         container = Some(Container(
           docker = Some(Docker(
-            network = Some(Network.BRIDGE),
+            network = "bridge",
             portMappings = Some(Seq(
               PortMapping(containerPort = 0, hostPort = 0, servicePort = 9000, protocol = "tcp")
             ))
@@ -692,7 +691,7 @@ class TaskBuilderTest extends MarathonSpec {
         app = AppDefinition(
           container = Some(Container(
             docker = Some(Docker(
-              network = Some(Network.BRIDGE),
+              network = "bridge",
               portMappings = Some(Seq(
                 PortMapping(containerPort = 8080, hostPort = 0, servicePort = 9000, protocol = "tcp"),
                 PortMapping(containerPort = 8081, hostPort = 0, servicePort = 9000, protocol = "tcp")
@@ -719,7 +718,7 @@ class TaskBuilderTest extends MarathonSpec {
           ports = Seq(22, 23),
           container = Some(Container(
             docker = Some(Docker(
-              network = Some(Network.BRIDGE),
+              network = "bridge",
               portMappings = Some(Seq(
                 PortMapping(containerPort = 8080, hostPort = 0, servicePort = 9000, protocol = "tcp"),
                 PortMapping(containerPort = 8081, hostPort = 0, servicePort = 9000, protocol = "tcp")

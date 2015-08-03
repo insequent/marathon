@@ -174,8 +174,8 @@ object MarathonBuild extends Build {
       runTest,
       setReleaseVersion,
       commitReleaseVersion,
-      tagRelease,
-      pushChanges
+      tagRelease
+      //pushChanges
     ))
 
   /**
@@ -215,7 +215,7 @@ object Dependencies {
     sprayClient % "compile",
     sprayHttpx % "compile",
     chaos % "compile",
-    mesosUtils % "compile",
+    //mesosUtils % "compile",
     jacksonCaseClass % "compile",
     twitterCommons % "compile",
     jodaTime % "compile",
@@ -245,7 +245,7 @@ object Dependency {
     // runtime deps versions
     val Chaos = "0.6.7"
     val JacksonCCM = "0.1.2"
-    val MesosUtils = "0.22.1-1"
+    //val MesosUtils = "0.24.0"
     val Akka = "2.3.9"
     val Spray = "1.3.2"
     val TwitterCommons = "0.0.76"
@@ -275,7 +275,7 @@ object Dependency {
   val sprayHttpx = "io.spray" %% "spray-httpx" % V.Spray
   val playJson = "com.typesafe.play" %% "play-json" % V.PlayJson
   val chaos = "mesosphere" %% "chaos" % V.Chaos
-  val mesosUtils = "mesosphere" %% "mesos-utils" % V.MesosUtils
+  //val mesosUtils = "mesosphere" %% "mesos-utils" % V.MesosUtils
   val jacksonCaseClass = "mesosphere" %% "jackson-case-class-module" % V.JacksonCCM
   val jerseyServlet =  "com.sun.jersey" % "jersey-servlet" % V.Jersey
   val jettyEventSource = "org.eclipse.jetty" % "jetty-eventsource-servlet" % V.JettyEventSource

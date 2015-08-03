@@ -91,7 +91,8 @@ object Container {
     */
   case class Docker(
       image: String = "",
-      network: Option[mesos.ContainerInfo.DockerInfo.Network] = None,
+      network: String = "",
+      publish_service: String = "",
       portMappings: Option[Seq[Docker.PortMapping]] = None,
       privileged: Boolean = false,
       parameters: Seq[Parameter] = Nil,
@@ -102,7 +103,9 @@ object Container {
 
       builder.setImage(image)
 
-      network foreach builder.setNetwork
+      builder.setNetwork(network)
+
+      builder.setPublishService(publish_service)
 
       portMappings.foreach { pms =>
         builder.addAllPortMappings(pms.map(_.toProto).asJava)
@@ -122,7 +125,9 @@ object Container {
 
       builder.setImage(image)
 
-      network foreach builder.setNetwork
+      builder.setNetwork(network)
+
+      builder.setPublishService(publish_service)
 
       portMappings.foreach { pms =>
         builder.addAllPortMappings(pms.map(_.toMesos).asJava)
@@ -144,7 +149,9 @@ object Container {
       Docker(
         image = proto.getImage,
 
-        network = if (proto.hasNetwork) Some(proto.getNetwork) else None,
+        network = proto.getNetwork,
+
+        publish_service = proto.getPublishService,
 
         portMappings = {
           val pms = proto.getPortMappingsList.asScala

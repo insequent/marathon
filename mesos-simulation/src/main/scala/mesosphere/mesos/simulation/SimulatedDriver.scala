@@ -57,8 +57,8 @@ class SimulatedDriver(driverProps: Props) extends SchedulerDriver {
   override def reviveOffers(): Status = ???
   override def acknowledgeStatusUpdate(status: TaskStatus): Status = ???
   // Mesos 0.23.x
-  //  override def acceptOffers(
-  //    o: util.Collection[OfferID], ops: util.Collection[Offer.Operation], filters: Filters): Status = ???
+  override def acceptOffers(
+    o: util.Collection[OfferID], ops: util.Collection[Offer.Operation], filters: Filters): Status = ???
 
   // life cycle
 

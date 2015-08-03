@@ -11,7 +11,6 @@ import mesosphere.marathon.state.Container.Docker.PortMapping
 import mesosphere.marathon.state.Container.{ Docker, Volume }
 import mesosphere.marathon.state._
 import mesosphere.marathon.upgrade._
-import org.apache.mesos.Protos.ContainerInfo.DockerInfo.Network
 import org.apache.mesos.{ Protos => mesos }
 import play.api.data.validation.ValidationError
 import play.api.libs.functional.syntax._
@@ -159,9 +158,6 @@ trait Formats
 trait ContainerFormats {
   import Formats._
 
-  implicit lazy val NetworkFormat: Format[Network] =
-    enumFormat(Network.valueOf, str => s"$str is not a valid network type")
-
   implicit lazy val PortMappingFormat: Format[Docker.PortMapping] = (
     (__ \ "containerPort").formatNullable[Integer].withDefault(0) ~
     (__ \ "hostPort").formatNullable[Integer].withDefault(0) ~
@@ -171,12 +167,13 @@ trait ContainerFormats {
 
   implicit lazy val DockerFormat: Format[Docker] = (
     (__ \ "image").format[String] ~
-    (__ \ "network").formatNullable[Network] ~
+    (__ \ "network").format[String] ~
+    (__ \ "publish_service").format[String] ~
     (__ \ "portMappings").formatNullable[Seq[Docker.PortMapping]] ~
     (__ \ "privileged").formatNullable[Boolean].withDefault(false) ~
     (__ \ "parameters").formatNullable[Seq[Parameter]].withDefault(Seq.empty) ~
     (__ \ "forcePullImage").formatNullable[Boolean].withDefault(false)
-  )(Docker(_, _, _, _, _, _), unlift(Docker.unapply))
+  )(Docker(_, _, _, _, _, _, _), unlift(Docker.unapply))
 
   implicit lazy val ModeFormat: Format[mesos.Volume.Mode] =
     enumFormat(mesos.Volume.Mode.valueOf, str => s"$str is not a valid mode")

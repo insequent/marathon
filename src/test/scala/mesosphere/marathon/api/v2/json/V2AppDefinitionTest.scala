@@ -182,7 +182,7 @@ class V2AppDefinitionTest extends MarathonSpec with Matchers {
     app = correct.copy(
       container = Some(Container(
         docker = Some(Docker(
-          network = Some(mesos.ContainerInfo.DockerInfo.Network.BRIDGE),
+          network = "bridge",
           portMappings = Some(Seq(
             Docker.PortMapping(8080, 0, 0, "tcp"),
             Docker.PortMapping(8081, 0, 0, "tcp")
@@ -202,7 +202,7 @@ class V2AppDefinitionTest extends MarathonSpec with Matchers {
     app = correct.copy(
       container = Some(Container(
         docker = Some(Docker(
-          network = Some(mesos.ContainerInfo.DockerInfo.Network.BRIDGE),
+          network = "bridge",
           portMappings = None
         ))
       )),
@@ -294,7 +294,6 @@ class V2AppDefinitionTest extends MarathonSpec with Matchers {
     import java.lang.{ Integer => JInt }
 
     import mesosphere.marathon.state.Container.Docker.PortMapping
-    import org.apache.mesos.Protos.ContainerInfo.DockerInfo.Network
 
     val app4 = V2AppDefinition(
       id = "bridged-webapp".toPath,
@@ -302,7 +301,7 @@ class V2AppDefinitionTest extends MarathonSpec with Matchers {
       container = Some(Container(
         docker = Some(Docker(
           image = "python:3",
-          network = Some(Network.BRIDGE),
+          network = "bridge",
           portMappings = Some(Seq(
             PortMapping(containerPort = 8080, hostPort = 0, servicePort = 9000, protocol = "tcp")
           ))
@@ -318,7 +317,7 @@ class V2AppDefinitionTest extends MarathonSpec with Matchers {
           "type": "DOCKER",
           "docker": {
             "image": "python:3",
-            "network": "BRIDGE",
+            "network": "bridge",
             "portMappings": [
               { "containerPort": 8080, "hostPort": 0, "servicePort": 9000, "protocol": "tcp" }
             ]
@@ -339,7 +338,8 @@ class V2AppDefinitionTest extends MarathonSpec with Matchers {
             "type": "DOCKER",
             "docker": {
                 "image": "group/image",
-                "network": "BRIDGE",
+                "network": "bridge",
+                "publish_service": "",
                 "portMappings": [
                     {
                         "containerPort": 8080,

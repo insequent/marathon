@@ -6,7 +6,6 @@ import mesosphere.marathon.state.Container._
 import mesosphere.marathon.state.PathId._
 import mesosphere.marathon.state._
 import mesosphere.marathon.{ MarathonSchedulerService, MarathonSpec }
-import org.apache.mesos.Protos.ContainerInfo.DockerInfo.Network
 import org.mockito.Mockito.when
 import org.scalatest.{ BeforeAndAfterAll, Matchers, OptionValues }
 
@@ -72,7 +71,7 @@ class ModelValidationTest
       container = Some(Container(
         docker = Some(Docker(
           image = "demothing",
-          network = Some(Network.BRIDGE),
+          network = "bridge",
           portMappings = Some(Seq(PortMapping(2000, servicePort = servicePort)))
         ))
       ))

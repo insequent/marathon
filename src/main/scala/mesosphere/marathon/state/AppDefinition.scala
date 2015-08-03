@@ -11,7 +11,6 @@ import mesosphere.marathon.state.Container.Docker.PortMapping
 import mesosphere.marathon.state.PathId._
 import mesosphere.mesos.TaskBuilder
 import mesosphere.mesos.protos.{ Resource, ScalarResource }
-import org.apache.mesos.Protos.ContainerInfo.DockerInfo.Network
 import org.apache.mesos.{ Protos => mesos }
 
 import scala.collection.JavaConverters._
@@ -216,7 +215,7 @@ case class AppDefinition(
     for {
       c <- container
       d <- c.docker
-      n <- d.network if n == Network.BRIDGE
+      //n <- d.network if n == "bridge"
       pms <- d.portMappings
     } yield pms
 
